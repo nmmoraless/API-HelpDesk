@@ -24,5 +24,10 @@
             Fecha = fecha;
             Accion = accion;
         }
+
+        public NewTicket()
+        {
+
+        }
     }
 }

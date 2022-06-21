@@ -28,7 +28,10 @@ namespace API_HelpDesk.Controllers
 
         public IList<NewTicket> ObtenerData()
         {
-            return TicketList;
+            TicketDAL ticketDAL = new TicketDAL();
+            IList<NewTicket> resultado = ticketDAL.ListarTickets();
+            return resultado;
+            //return TicketList;
         }
 
         [HttpPost]

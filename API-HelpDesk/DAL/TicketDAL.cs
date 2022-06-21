@@ -17,6 +17,7 @@ namespace API_HelpDesk.DAL
         //CREACION DE NUEVOS TICKETS EN LA BASE DE DATOS
         public string CrearNuevoTicket(NewTicket TicketNew)
         {
+       
             try
             {
                 SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
@@ -55,6 +56,55 @@ namespace API_HelpDesk.DAL
         }
 
         //CONSULTAR TICKETS DE LA BASE DE DATOS
+
+        public IList<NewTicket> ListarTickets()
+        {
+            IList<NewTicket> ListaDeTickets = new List<NewTicket>();
+
+            try
+            {
+                SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
+                builder.DataSource = "DESKTOP-DQ37319\\LOCALDB";
+                builder.UserID = "sa";
+                builder.Password = "123456";
+                builder.InitialCatalog = "HelpDeskDB";
+                builder.TrustServerCertificate = true;
+                builder.Encrypt = true;
+                builder.IntegratedSecurity = true;
+                builder.UserInstance = false;
+
+                using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+                {
+
+                    String sql = String.Format("SELECT[ID], [AREA], [MUNICIPIO], [DESCRIPCION], [RESPONSABLE], [ESTADO] FROM[dbo].[TICKETS];");//String.Format es opcional
+
+                    using (SqlCommand command = new SqlCommand(sql, connection))
+                    {
+                        connection.Open();
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                NewTicket unTicket = new NewTicket();
+                                unTicket.Id = reader.GetInt32(0);
+                                unTicket.Area = reader.GetString(1);
+                                unTicket.Municipio = reader.GetString(2);
+                                unTicket.Descripcion = reader.GetString(3);
+                                unTicket.Responsable = reader.GetString(4);
+                                unTicket.Accion = reader.GetString(5);
+
+                                ListaDeTickets.Add(unTicket);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqlException e)
+            {
+               
+            }
+            return ListaDeTickets;
+        }
 
 
     }
