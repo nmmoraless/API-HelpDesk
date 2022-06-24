@@ -121,7 +121,7 @@ namespace API_HelpDesk.DAL
             return ListaDeTickets;
         }
 
-        //ACTUALIZACION DE TICKETS EN LA BASE DE DATOS
+        //ACTUALIZACION DE TICKETS EN LA BASE DE DATOS.
         public string UpdateTicket(NewTicket TicketNew, int id)
         {
 
