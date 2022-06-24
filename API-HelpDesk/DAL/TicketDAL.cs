@@ -15,9 +15,7 @@ namespace API_HelpDesk.DAL
 
         //CREACION DE NUEVOS TICKETS EN LA BASE DE DATOS
         public string CrearNuevoTicket(NewTicket TicketNew)
-        {
-
-       
+        {       
             try
             {
                 SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
@@ -32,8 +30,12 @@ namespace API_HelpDesk.DAL
 
                 using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
                 {
+                    string year = TicketNew.Fecha.Year.ToString();
+                    int month = TicketNew.Fecha.Month;
+                    int day = TicketNew.Fecha.Day;
+                    string newDate = year + "-" + (month < 10 ? "0" + month.ToString() : month.ToString()) + "-" + (day < 10 ? "0" + day.ToString() : day.ToString());
 
-                    String sql = $"INSERT INTO [dbo].[TICKETS] ([AREA], [RESPONSABLE], [DEPARTAMENTO], [MUNICIPIO], [DESCRIPCION],[SOLUCION], [ESTADO]) VALUES('{TicketNew.Area}','{TicketNew.Responsable}','{TicketNew.Departamento}','{TicketNew.Municipio}','{TicketNew.Descripcion}','{TicketNew.Solucion}','{TicketNew.Accion}');";
+                    String sql = $"INSERT INTO [dbo].[TICKETS] ([AREA], [RESPONSABLE], [DEPARTAMENTO], [MUNICIPIO], [DESCRIPCION],[SOLUCION],[FECHA], [ESTADO]) VALUES('{TicketNew.Area}','{TicketNew.Responsable}','{TicketNew.Departamento}','{TicketNew.Municipio}','{TicketNew.Descripcion}','{TicketNew.Solucion}',CONVERT(datetime, '{newDate}'),'{TicketNew.Accion}');";
 
                     using (SqlCommand command = new SqlCommand(sql, connection))
                     {
@@ -48,16 +50,16 @@ namespace API_HelpDesk.DAL
                     }
                 }
             }
-            catch (SqlException e)
+            catch (Exception e)
             {
-                return "Falle "+e.Message;
+                return "Fallo";
             }
             return "Lo logre";
         }
 
         //CONSULTAR TICKETS DE LA BASE DE DATOS
 
-        public IList<NewTicket> ListarTickets()
+        public IList<NewTicket> ListarTickets(int? id)
         {
             IList<NewTicket> ListaDeTickets = new List<NewTicket>();
 
@@ -76,7 +78,17 @@ namespace API_HelpDesk.DAL
                 using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
                 {
 
-                    String sql = String.Format("SELECT[ID], [AREA], [RESPONSABLE], [DEPARTAMENTO], [MUNICIPIO], [DESCRIPCION], [SOLUCION], [ESTADO] FROM [dbo].[TICKETS];");//String.Format() es opcional
+                    String sql;
+                    if (id == 0)
+                    {
+                        sql = String.Format("SELECT[ID], [AREA], [RESPONSABLE], [DEPARTAMENTO], [MUNICIPIO], [DESCRIPCION], [SOLUCION],[FECHA], [ESTADO] FROM [dbo].[TICKETS];");//String.Format() es opcional
+                    }
+                    else
+                    {
+                        sql = String.Format($"SELECT[ID], [AREA], [RESPONSABLE], [DEPARTAMENTO], [MUNICIPIO], [DESCRIPCION], [SOLUCION],[FECHA], [ESTADO] FROM [dbo].[TICKETS] WHERE ID = {id};");//String.Format() es opcional
+                    }
+
+                    
 
                     using (SqlCommand command = new SqlCommand(sql, connection))
                     {
@@ -93,7 +105,8 @@ namespace API_HelpDesk.DAL
                                 unTicket.Municipio = reader.GetString(4);
                                 unTicket.Descripcion = reader.GetString(5);
                                 unTicket.Solucion = reader.GetString(6);
-                                unTicket.Accion = reader.GetString(7);
+                                unTicket.Fecha = reader.GetDateTime(7);
+                                unTicket.Accion = reader.GetString(8);
 
                                 ListaDeTickets.Add(unTicket);
                             }
@@ -126,8 +139,12 @@ namespace API_HelpDesk.DAL
 
                 using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
                 {
+                    string year = TicketNew.Fecha.Year.ToString();
+                    int month = TicketNew.Fecha.Month;
+                    int day = TicketNew.Fecha.Day;
+                    string newDate = year + "-" + (month < 10 ? "0" + month.ToString() : month.ToString()) + "-" + (day < 10 ? "0" + day.ToString() : day.ToString());
 
-                    String sql = $"UPDATE [dbo].[TICKETS] SET [AREA] = '{TicketNew.Area}', [RESPONSABLE] = '{TicketNew.Responsable}', [DEPARTAMENTO] = '{TicketNew.Departamento}', [MUNICIPIO] = '{TicketNew.Municipio}', [DESCRIPCION] = '{TicketNew.Descripcion}', [SOLUCION] = '{TicketNew.Solucion}', [ESTADO] = '{TicketNew.Accion}' WHERE [ID] = {id};";
+                    String sql = $"UPDATE [dbo].[TICKETS] SET [AREA] = '{TicketNew.Area}', [RESPONSABLE] = '{TicketNew.Responsable}', [DEPARTAMENTO] = '{TicketNew.Departamento}', [MUNICIPIO] = '{TicketNew.Municipio}', [DESCRIPCION] = '{TicketNew.Descripcion}', [SOLUCION] = '{TicketNew.Solucion}',[FECHA] = CONVERT(datetime, '{newDate}'), [ESTADO] = '{TicketNew.Accion}' WHERE [ID] = {id};";
 
                     using (SqlCommand command = new SqlCommand(sql, connection))
                     {
