@@ -19,12 +19,11 @@ namespace API_HelpDesk.Controllers
 
         [HttpGet]
 
-        public IList<NewTicket> ObtenerData(int? id)
+        public IList<Ticket> ObtenerData(int? id)
         {
             TicketDAL ticketDAL = new TicketDAL();
-            IList<NewTicket> resultado = ticketDAL.ListarTickets(id);
+            IList<Ticket> resultado = ticketDAL.ListarTickets(id);
             return resultado;
-            //return TicketList;
         }
 
         [HttpPost]
@@ -48,14 +47,14 @@ namespace API_HelpDesk.Controllers
 
         [HttpPut]
 
-        public HttpResponseMessage ActualizarData([FromBody] NewTicket TicketNew, int id) //Tipo de dato respuesta HTTP
+        public HttpResponseMessage ActualizarData([FromBody] Ticket UpdTicket, int id) //Tipo de dato respuesta HTTP
         {
             HttpResponseMessage res;
             try
             {
                 //Instaciar conexión a base de datos
                 TicketDAL ticketDAL = new TicketDAL();
-                string newTicket = ticketDAL.UpdateTicket(TicketNew, id);
+                string Ticket = ticketDAL.UpdateTicket(UpdTicket, id);
                 res = new HttpResponseMessage(HttpStatusCode.OK);
             }
             catch (Exception e)
@@ -84,6 +83,7 @@ namespace API_HelpDesk.Controllers
             }
             return res;
         }
+
 
     }
 }

@@ -1,18 +1,18 @@
 ﻿namespace API_HelpDesk.Models
 {
-    public class NewTicket
+    public class Ticket
     {
         public int Id { get; set; }
-        public int Area { get; set; }
-        public int Usuario { get; set; }
-        public int Departamento { get; set; }
-        public int Municipio { get; set; }
+        public string Area { get; set; }
+        public string Usuario { get; set; }
+        public string Departamento { get; set; }
+        public string Municipio { get; set; }
         public string Descripcion { get; set; }
         public string? Solucion { get; set; }
         public DateTime Fecha { get; set; }
         public string Accion { get; set; }
 
-        public NewTicket(int id, int area, int usuario, int departamento, int municipio, string descripcion, string solucion, DateTime fecha, string accion)
+        public Ticket(int id, string area, string usuario, string departamento, string municipio, string descripcion, string solucion, DateTime fecha, string accion)
         {
             Id = id;
             Area = area;
@@ -25,7 +25,7 @@
             Accion = accion;
         }
 
-        public NewTicket()
+        public Ticket()
         {
 
         }
